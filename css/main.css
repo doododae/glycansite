@@ -35,6 +35,12 @@ header {
 	margin-left: 10px;
 }
 
+.popover {
+	max-width: none;
+	width: 20%;
+	max-height: none;
+}
+
 .navbar-nav {
 	line-height: 90px;
 	font-size: 24px;
@@ -221,11 +227,16 @@ footer div p {
 .collapsed {
 	text-decoration: none;
 	cursor: pointer;
-
 }
 
 .small {
 	font-size: 10px;
+}
+
+.distributor {
+	color: white;
+	font-size: 14px;
+	cursor: pointer;
 }
 
 .size-14 {
@@ -282,10 +293,10 @@ img {
 	width: 100%;
 }
 
-.popover {
-	max-width: 100%;
-	height: auto;
-	text-align: center;
+.panel-default {
+	border-radius: 0px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
 }
 
 .active-size {
@@ -302,7 +313,8 @@ img {
 	padding: 10px;
 	margin-top: 6px;
 	font-size: 18px;
-	border-radius: 5px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
 }
 
 .nav-NA {
@@ -319,7 +331,8 @@ img {
 	padding: 10px;
 	margin-top: 6px;
 	font-size: 18px;
-	border-radius: 5px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
 }
 
 .nav-NS-NA {
@@ -336,7 +349,8 @@ img {
 	padding: 10px;
 	margin-top: 6px;
 	font-size: 18px;
-	border-radius: 5px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
 }
 
 .nav-NS {
@@ -353,7 +367,8 @@ img {
 	padding: 10px;
 	margin-top: 6px;
 	font-size: 18px;
-	border-radius: 5px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
 }
 
 .nav-6S {
@@ -375,7 +390,8 @@ img {
 	padding: 10px;
 	margin-top: 6px;
 	font-size: 18px;
-	border-radius: 5px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
 }
 
 .nav-2S {
@@ -392,7 +408,8 @@ img {
 	padding: 10px;
 	margin-top: 6px;
 	font-size: 18px;
-	border-radius: 5px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
 }
 
 .nav-2S-6S {
@@ -409,7 +426,8 @@ img {
 	padding: 10px;
 	margin-top: 6px;
 	font-size: 18px;
-	border-radius: 5px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
 }
 
 .nav-3S {
@@ -417,24 +435,6 @@ img {
 	color: white;
 	padding: 5px;;
 	font-size: 14px;
-	border-radius: 5px;
-}
-
-.FAz-series {
-	background: #760A35;
-	color: white;
-	padding: 10px;
-	margin-top: 6px;
-	font-size: 18px;
-	border-radius: 5px;
-}
-
-.FAz-nav {
-	background: #760A35;
-	color: white;
-	padding: 5px;
-	margin-top: 6px;
-	font-size: 16px;
 	border-radius: 5px;
 }
 
@@ -484,6 +484,12 @@ a:hover {
 	border-bottom-width:1px;
 	border-bottom-color:#ccc;
 	padding:10px 40px 10px 5px;
+}
+
+.border-bottom {
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #ccc;
 }
 
 a {

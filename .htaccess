@@ -1,5 +1,7 @@
 RewriteEngine On 
-Options FollowSymLinks
+Options +FollowSymLinks
+Order Allow,Deny
+Allow from all
 
 RewriteBase /
 

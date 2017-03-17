@@ -51,6 +51,11 @@ app.config(function($stateProvider, $locationProvider){
   	templateUrl: '/support/contact_us.html'
   }
 
+  var distributorState = {
+  	name: 'distributors',
+  	url: '/products/distributor-list',
+  	templateUrl: '/products/distributor-list.html'
+  }
   $stateProvider.state(indexState);
   $stateProvider.state(productIndexState);
   $stateProvider.state(productState);
@@ -59,13 +64,18 @@ app.config(function($stateProvider, $locationProvider){
   $stateProvider.state(supportState);
   $stateProvider.state(aboutUsState);
   $stateProvider.state(contactState);
+  $stateProvider.state(distributorState);
 });
 
-app.controller('compoundCtrl', function($location, $scope, $http){
+app.controller('compoundCtrl', function($location, $scope, $sce, $http){
 	$http.get("/products/compounds.php")
 	.then(function (response) {
 		$scope.compounds = response.data.records;
 	});
+
+	$scope.distributor = {
+		title: "Distributors"
+	};
 
 	$scope.options = [{
 		value: '1',
@@ -77,22 +87,6 @@ app.controller('compoundCtrl', function($location, $scope, $http){
 		value: '10',
 		label: '1 mg'
 	}];
-
-	$scope.az = [
-		"NS-NA",
-		"6S",
-		"2S",
-		"2S-6S"
-	];
-
-	$scope.pnp = [
-		"NA",
-		"NS",
-		"6S",
-		"2S",
-		"2S-6S",
-		"3S"
-	];
 
 	$scope.seriesName = [
 		'NA',
@@ -115,13 +109,15 @@ app.controller('compoundCtrl', function($location, $scope, $http){
 
 	$scope.tagName = [
 		'pNP',
-		'Az'
+		'Azido',
+		'Biotin'
 	];
 
 	var search = $location.search();
 	$scope.seriesFilter = search.series;
 	$scope.tagFilter = search.tag;
 	$scope.sizeFilter = search.size;
+	$scope.selectedIndex = undefined;
 
 	$scope.filterBy = function(x) {
 		$scope.nameFilter = x; 
@@ -186,7 +182,15 @@ app.controller('compoundCtrl', function($location, $scope, $http){
 	$scope.isPNP = function(family) {
 		if(family === "pNP")
 			return true;
+		else if(family === "Biotin")
+			return true;
 		else
 			return false;
+	}
+	$scope.changeGlyph = function(index) {
+		if($scope.selectedIndex == undefined)
+			$scope.selectedIndex = index;
+		else
+			$scope.selectedIndex = undefined;
 	}
 });
