@@ -1,13 +1,13 @@
 <script type="text/ng-template" id="distributor-list.html">
 <div>
-<a class="size-14" ng-click="addToCart(x.id)">Glycan Therapeutics <span class="glyphicon glyphicon-chevron-right small" aria-hidden="true"></span></a><br>
+<a class="size-14" href="mailto:info@glycantherapeutics.com" target="_top">Glycan Therapeutics <span class="glyphicon glyphicon-chevron-right small" aria-hidden="true"></span></a><br>
 <a ng-hide="!availablity(x.Link_A)" class="size-14" href="{{x.Link_A}}" class="available">Galen Supplies <span class="glyphicon glyphicon-chevron-right small" aria-hidden="true"></span></a><br>
 <a ng-hide="!availablity(x.Link_B)" class="size-14" href="{{x.Link_B}}" class="available">Iduron <span class="glyphicon glyphicon-chevron-right small" aria-hidden="true"></span></a><br>
 <a ng-hide="!availablity(x.Link_C)" class="size-14" href="{{x.Link_C}}" class="available">Polysciences <span class="glyphicon glyphicon-chevron-right small" aria-hidden="true"></span></a><br>
 </div>		
 </script>
 
-<div class="container">
+<div class="container" ng-controller="compoundCtrl">
 	<div class="row">
 		<div class="col-sm-3">
 			<ul class="nav nav-pills nav-stacked nav-collapsible">
@@ -37,7 +37,7 @@
 						<a ng-hide="isPNP(x.Family)" class="white-text" ng-href="../support/{{x.Family}}-sheets/Safety_{{x.Family}}-{{x.id}}.pdf" target="_self"><span class="glyphicon glyphicon-exclamation-sign"></span></a>
 						<a uib-popover-template="'distributor-list.html'" popover-placement="right" class="distributor float-right">Distributors</a>
 						<br>
-						<span class="white-text" ng-hide="noPrice(x.Price)"> Price: $<span ng-bind="displayPrice(x.Price, pricing.value)"></span>
+						<span class="white-text" ng-hide="noPrice(x.Price)"> Price: $<span ng-bind="displayPrice(x.Price, pricing.value, x.Family)"></span>
 						<select class="black-text float-right pricing-box" ng-init="pricing=options[0]" ng-model="pricing" ng-options="option as option.label for option in options"></select>
 						</span>
 						<span class="white-text" ng-show="noPrice(x.Price)">Price: MSRP</span>				

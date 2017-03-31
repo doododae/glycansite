@@ -14,6 +14,7 @@
 		<!-- Latest version of AngularJS -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.2/angular-ui-router.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.4.0/ui-bootstrap-tpls.min.js"></script>
 		<script src="/js/products.js"></script>
 		<base href="/">
@@ -31,7 +32,45 @@
 		</script>
 	</head>
 
-	<body ng-app="Compounds">
+	<body ng-app="Compounds" ng-controller="compoundCtrl as $ctrl">
+	<script type="text/ng-template" id="cartModal.html">
+		 <div class="modal-header">
+            <h3 class="modal-title" id="modal-title">Cart</h3>
+        </div>
+        <div class="modal-body" id="modal-body">
+        	<div class="row">
+        		<div class="col-sm-6">
+        			<input id="Name" ng-model="name" class="form-control input-sm text-center" placeholder="Full Name">
+        		</div>
+        		<div class="col-sm-6">
+        			<input id="Email" ng-model="email" class="form-control input-sm text-center" placeholder="Email">
+        		</div>
+        		<div class="col-sm-6">
+        			<input id="Phone" ng-model="phone" class="form-control input-sm text-center" placeholder="Phone Number">
+        		</div>
+        		<div class="col-sm-6">
+        			<input id="ShipAddress" ng-model="shipAddress" class="form-control input-sm text-center" placeholder="Shipping Address">
+        		</div>
+        		<div class="col-sm-6">
+        			<input id="BillAddress" ng-model="billAddress" class="form-control input-sm text-center" placeholder="Billing Address">
+        		</div>
+        	</div>
+            <div ng-repeat="item in $ctrl.items" class="row">
+            	<div class="col-sm-10">
+            		<p>{{ item.Name }}</p>
+            	</div>
+                <div class="col-sm-2">
+                	<a ng-click="subQty($index)"><span class="glyphicon glyphicon-minus"></span></a> 
+                	<input id="cartQuantity" class="form-control input-sm text-center" ng-model="quantity[$index]" ng-init="quantity[$index]=1" placeholder="Qty">
+                	<a ng-click="addQty($index)"><span class="glyphicon glyphicon-plus"></span></a> 
+                </div>
+            </li>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="$ctrl.ok()">OK</button>
+            <button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Cancel</button>
+        </div>
+	</script>
 		<header>
 			<nav>
 				<h1>
@@ -59,10 +98,11 @@
 				        </li>
 					</ul>
 				<ul class="information">
+					<li><a ng-click="$ctrl.open()">Cart</a></li>
 					<li><a ui-sref="about-us" ui-sref-active="active">About Us</a></li>
 					<li><a ui-sref="contact-us" ui-sref-active="active">Contact Us</a></li>
 				</ul>
-				<div style = "text-align:center;">
+				<div class="text-center">
 					<svg width="96%" height="20">
 						<rect x="0" y="0" rx="2" ry="2" width="100%" height="2" style="fill:#ff0000;" /> 
 					</svg>

@@ -20,7 +20,7 @@ else {
 $input = json_decode(file_get_contents("php://input"));
 
 if($_SERVER['REQUEST_METHOD'] == "GET") {
-	$query = "SELECT * FROM compounds";
+	$query = "SELECT Name FROM compounds JOIN tempcart ON compounds.id = tempcart.pid";
 
 	$result = $conn->query($query);
 
@@ -29,18 +29,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
 		if($outp != "") {
 			$outp .= ",";
 		}
-		$outp .= '{"id":"'.$rs["id"].'",';
-		$outp .= '"Family":"'.$rs["Family"].'",';
-		$outp .= '"Series":"'.$rs["Series"].'",';
-		$outp .= '"Name":"'.$rs["Name"].'",';
-		$outp .= '"Structure":"'.$rs["Structure"].'",';
-		$outp .= '"url":"'.$rs["url"].'",';
-		$outp .= '"Link_A":"'.$rs["Link_A"].'",';
-		$outp .= '"Link_B":"'.$rs["Link_B"].'",';
-		$outp .= '"Link_C":"'.$rs["Link_C"].'",';
-		$outp .= '"Picture":"'.$rs["Picture"].'",';
-		$outp .= '"Price":"'.$rs["Price"].'",';
-		$outp .= '"Keywords":"'.$rs["Keywords"].'"}';
+		$outp .= '{"Name":"'.$rs["Name"].'"}';
 	}
 
 	$outp = '{"records":['.$outp.']}';
@@ -50,9 +39,13 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
 }
 
 else if($_SERVER['REQUEST_METHOD'] == "POST") {
-	$id = intval($_POST['id']);
-	$pid = intval($_POST['pid']);
-	$query = "INSERT INTO tempcart VALUES ($id, $pid)";
+	$id = $_POST['id'];
+	$name = $_POST['name'];
+	$email = $_POST['email'];
+	$shipAddress = $_POST['shipAddress'];
+	$billAddress = $_POST['billAddress'];
+	$cartID = $_POST['cartID'];
+	$query = "INSERT INTO customer_info VALUES ('$id', '$name', '$email', '$shipAddress', '$billAddress', '$cartID')";
 	$conn->query($query);
 	exit();
 }

@@ -1,4 +1,4 @@
-var app = angular.module('Compounds', ['ui.router', 'ui.bootstrap', 'ngCookies']);
+var app = angular.module('Compounds', ['ui.router', 'ui.bootstrap']);
 
 app.config(function($stateProvider, $locationProvider){
   $locationProvider.html5Mode(true);   
@@ -51,6 +51,11 @@ app.config(function($stateProvider, $locationProvider){
   	templateUrl: '/support/contact_us.html'
   }
 
+  var distributorState = {
+  	name: 'distributors',
+  	url: '/products/distributor-list',
+  	templateUrl: '/products/distributor-list.html'
+  }
   $stateProvider.state(indexState);
   $stateProvider.state(productIndexState);
   $stateProvider.state(productState);
@@ -59,34 +64,25 @@ app.config(function($stateProvider, $locationProvider){
   $stateProvider.state(supportState);
   $stateProvider.state(aboutUsState);
   $stateProvider.state(contactState);
+  $stateProvider.state(distributorState);
 });
 
-app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModal, $log, $document, $cookies){
+app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModal, $log, $document){
 	$http.get("/products/compounds.php")
 	.then(function (response) {
 		$scope.compounds = response.data.records;
 	});
-	
-	$http.get('/cart.php')
-	.then(function(response) {
-		$ctrl.items = response.data.records;
-	});
 
 	var $ctrl = this;
+	$ctrl.items = ['adfkdfk', 'badsfadf', 'cwerere'];
 
 	$ctrl.open = function(size, parentSelector) {
 		var parentElem = parentSelector ? angular.element($document[0].querySelector('.cart-modal' + parentSelector)) : undefined;
-		$http.get('/cart.php')
-		.then(function(response) {
-			$ctrl.items = response.data.records;
-		});
-
 		var modalInstance = $uibModal.open({
 			animation: true,
 			ariaLabelledBy: 'modal-title',
 			ariaDescribedBy: 'modal-body',
 			templateUrl: 'cartModal.html',
-			controller: 'ModalInstanceCtrl',
 			controllerAs: '$ctrl',
 			size: size,
 			appendTo: parentElem,
@@ -142,20 +138,6 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 		'Biotin'
 	];
 
-	$scope.addToCart = function(pid) {
-		$.post("/products/compounds.php", {id: '101', pid: pid})
-		.then(function(response) {
-			$ctrl.open();
-		});
-	}
-
-	$scope.addQty = function(index) {
-		$scope.quantity[index] = $scope.quantity[index] + 1;
-	}
-
-	$scope.subQty = function(index) {
-		$scope.quantity[index] = $scope.quantity[index] + -1;
-	}
 	var search = $location.search();
 	$scope.seriesFilter = search.series;
 	$scope.tagFilter = search.tag;
@@ -209,18 +191,32 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 		else
 			return false;
 	}
-	$scope.displayPrice = function(price, multiplier) {
+	$scope.displayPrice = function(price, multiplier, tag) {
 		price = Number(price);
 		multiplier = Number(multiplier);
 		if(multiplier === 5) {
-			price = price * multiplier * .7;
+			if(price > 40) {
+				if(tag === "pNP")
+					price = price * multiplier * .65;				
+				else 
+					price = price * multiplier * .7;
+			}
+			else
+				price = price * multiplier;
 		}
 		else if(multiplier === 10) {
-			price = price * multiplier * .6;
+			if(price > 40) {
+				if(tag === "pNP")
+					price = price * multiplier * .52;
+				else
+					price = price * multiplier * .6;
+			}
+			else
+				price = price * multiplier;
 		}
 
 		$scope.price = price;
-		return price;
+		return price.toFixed(2);
 	}
 	$scope.isPNP = function(family) {
 		if(family === "pNP")
@@ -236,19 +232,4 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 		else
 			$scope.selectedIndex = undefined;
 	}
-});
-
-angular.module('Compounds').controller('ModalInstanceCtrl', function ($uibModalInstance, items, $scope) {
-  var $ctrl = this;
-  $ctrl.items = items;
-
-  $ctrl.ok = function () {
-  	$.post("/cart.php", {id: "online-test-101", name: $scope.name, email: $scope.email, phone: $scope.phone, shipAddress: $scope.shipAddress, billAddress: $scope.billAddress, cartID: "101"});
-  	
-    $uibModalInstance.close();
-  };
-
-  $ctrl.cancel = function () {
-    $uibModalInstance.dismiss('cancel');
-  };
 });
