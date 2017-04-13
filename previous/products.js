@@ -1,6 +1,6 @@
-var app = angular.module('Compounds', ['ui.router', 'ui.bootstrap', 'ngCookies']);
+var app = angular.module('Compounds', ['ui.router', 'ui.bootstrap']);
 
-app.config(function($stateProvider, $locationProvider) {
+app.config(function($stateProvider, $locationProvider){
   $locationProvider.html5Mode(true);   
   var indexState = {
   	name: 'index',
@@ -51,18 +51,11 @@ app.config(function($stateProvider, $locationProvider) {
   	templateUrl: '/support/contact_us.html'
   }
 
-  var orderState = {
-  	name: 'order',
-  	url: '/support/order',
-  	templateUrl: '/support/order.html'
+  var distributorState = {
+  	name: 'distributors',
+  	url: '/products/distributor-list',
+  	templateUrl: '/products/distributor-list.html'
   }
-
-  var confirmState = {
-  	name: 'confirm',
-  	url: '/support/confirm',
-  	templateUrl: '/support/order-confirm.html'
-  }
-
   $stateProvider.state(indexState);
   $stateProvider.state(productIndexState);
   $stateProvider.state(productState);
@@ -71,38 +64,25 @@ app.config(function($stateProvider, $locationProvider) {
   $stateProvider.state(supportState);
   $stateProvider.state(aboutUsState);
   $stateProvider.state(contactState);
-  $stateProvider.state(orderState);
-  $stateProvider.state(confirmState);
+  $stateProvider.state(distributorState);
 });
 
-app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModal, $log, $document, $cookies, $state){
+app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModal, $log, $document){
 	$http.get("/products/compounds.php")
 	.then(function (response) {
 		$scope.compounds = response.data.records;
 	});
-	
-	$http.get('/cart.php')
-	.then(function(response) {
-		$ctrl.items = response.data.records;
-	});
 
 	var $ctrl = this;
-
-	$scope.quantity = [];
+	$ctrl.items = ['a', 'b', 'c'];
 
 	$ctrl.open = function(size, parentSelector) {
 		var parentElem = parentSelector ? angular.element($document[0].querySelector('.cart-modal' + parentSelector)) : undefined;
-		$http.get('/cart.php')
-		.then(function(response) {
-			$ctrl.items = response.data.records;
-		});
-
 		var modalInstance = $uibModal.open({
 			animation: true,
 			ariaLabelledBy: 'modal-title',
 			ariaDescribedBy: 'modal-body',
 			templateUrl: 'cartModal.html',
-			controller: 'ModalInstanceCtrl',
 			controllerAs: '$ctrl',
 			size: size,
 			appendTo: parentElem,
@@ -121,11 +101,6 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 	$scope.distributor = {
 		title: "Distributors"
 	};
-
-	$scope.pnpOptions =[{
-		value: '10',
-		label: '1 mg'
-	}];
 
 	$scope.options = [{
 		value: '1',
@@ -162,32 +137,6 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 		'Azido',
 		'Biotin'
 	];
-
-	$scope.addToCart = function(pid, size, size_name) {
-		let promise = new Promise((resolve, reject) => {
-			$.post("/products/compounds.php", {id: '101', pid: pid, size: size, size_name: size_name});
-			setTimeout(function() {
-				resolve("Success!");
-			}, 250);
-		});
-
-		promise.then(function(response) {
-			$http.get('/cart.php')
-			.then(function(response) {
-				$ctrl.items = response.data.records;
-			});
-			$ctrl.open();
-		});
-	}
-
-	$scope.pnpPricing = function(family, pricing) {
-		if(pricing > 40 && family == 'pNP') {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
 
 	var search = $location.search();
 	$scope.seriesFilter = search.series;
@@ -242,18 +191,39 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 		else
 			return false;
 	}
-	$scope.displayPrice = function(price, multiplier) {
+	$scope.displayPrice = function(price, multiplier, tag) {
 		price = Number(price);
 		multiplier = Number(multiplier);
 		if(multiplier === 5) {
-			price = price * multiplier * .7;
+			if(price > 40) {
+				if(tag == "pNP")
+					if(price === 150) {
+						price = 500;
+					}
+					else 
+						price = price * multiplier * .65;				
+				else 
+					price = price * multiplier * .7;
+			}
+			else
+				price = price * multiplier;
 		}
 		else if(multiplier === 10) {
-			price = price * multiplier * .6;
+			if(price > 40) {
+				if(tag == "pNP")
+					if(price === 150)
+						price = 800;
+					else
+						price = price * multiplier * .52;
+				else
+					price = price * multiplier * .6;
+			}
+			else
+				price = price * multiplier;
 		}
 
 		$scope.price = price;
-		return price;
+		return price.toFixed(2);
 	}
 	$scope.isPNP = function(family) {
 		if(family === "pNP")
@@ -269,38 +239,4 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 		else
 			$scope.selectedIndex = undefined;
 	}
-	$scope.confirmPurchase = function() {
-		$.post("/cart.php", {id: "online-test-101", name: $scope.name, email: $scope.email, phone: $scope.phone, shipAddress: $scope.shipAddress, billAddress: $scope.billAddress, poNo: $scope.PO, cartID: "101"})
-		.then( function(results) {
-			$state.go('confirm');
-		});
-	}
-});
-
-angular.module('Compounds').controller('ModalInstanceCtrl', function ($uibModalInstance, items, $scope, $state) {
-  var $ctrl = this;
-  $ctrl.items = items;
-
-  $ctrl.displayPrice = function(price, multiplier) {
-		price = Number(price);
-		multiplier = Number(multiplier);
-		if(multiplier === 5) {
-			price = price * multiplier * .7;
-		}
-		else if(multiplier === 10) {
-			price = price * multiplier * .6;
-		}
-
-		$scope.price = price;
-		return price;
-	}
-
-  $ctrl.ok = function () {
-  	$state.go('order');
-    $uibModalInstance.close();
-  };
-
-  $ctrl.cancel = function () {
-    $uibModalInstance.dismiss('cancel');
-  };
 });

@@ -1,0 +1,35 @@
+<div class="container">
+	<h2>Checkout</h2>
+	<div ng-repeat="item in $ctrl.items" class="row">
+    	<div class="col-sm-10">
+    		<p class="border-bottom">ID: {{item.id}} | {{item.Name}} ({{item.size_name}})</p>
+    		<p>{{item.Structure}}</p>
+    	</div>
+        <div class="col-sm-2"> 
+        	$<span ng-bind="displayPrice(item.Price, item.size)"></span> x {{quantity[$index]}}
+        </div>
+    </div>	
+	<div class="row">
+		<div class="col-sm-6">
+			<input id="Name" ng-model="name" class="form-control input-sm text-center" placeholder="Full Name">
+		</div>
+		<div class="col-sm-6">
+			<input id="Email" ng-model="email" class="form-control input-sm text-center" placeholder="Email">
+		</div>
+		<div class="col-sm-6">
+			<input id="Phone" ng-model="phone" class="form-control input-sm text-center" placeholder="Phone Number">
+		</div>
+		<div class="col-sm-6">
+			<input id="ShipAddress" ng-model="shipAddress" class="form-control input-sm text-center" placeholder="Shipping Address">
+		</div>
+		<div class="col-sm-6">
+			<input id="BillAddress" ng-model="billAddress" class="form-control input-sm text-center" placeholder="Billing Address">
+		</div>
+		<div class="col-sm-6">
+			<input id="PO" ng-model="PO" class="form-control input-sm text-center" placeholder="PO Number">
+		</div>
+	</div>
+	<div class="row text-right">
+		<button class="btn btn-primary text-right" type="button" ng-click="confirmPurchase()">Confirm</button>
+	</div>
+</div>

@@ -52,7 +52,9 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
 else if($_SERVER['REQUEST_METHOD'] == "POST") {
 	$id = intval($_POST['id']);
 	$pid = intval($_POST['pid']);
-	$query = "INSERT INTO tempcart VALUES ($id, $pid)";
+	$size = intval($_POST['size']);
+	$size_name = $conn->real_escape_string($_POST['size_name']);
+	$query = "INSERT INTO tempcart VALUES ($id, $pid, $size, '$size_name')";
 	$conn->query($query);
 	exit();
 }

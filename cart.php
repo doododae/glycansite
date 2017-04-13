@@ -20,7 +20,7 @@ else {
 $input = json_decode(file_get_contents("php://input"));
 
 if($_SERVER['REQUEST_METHOD'] == "GET") {
-	$query = "SELECT Name FROM compounds JOIN tempcart ON compounds.id = tempcart.pid";
+	$query = "SELECT compounds.id, Name, size, size_name, Price, Structure FROM compounds JOIN tempcart ON compounds.id = tempcart.pid";
 
 	$result = $conn->query($query);
 
@@ -29,7 +29,12 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
 		if($outp != "") {
 			$outp .= ",";
 		}
-		$outp .= '{"Name":"'.$rs["Name"].'"}';
+		$outp .= '{"id":"'.$rs["id"].'",';
+		$outp .= '"Name":"'.$rs["Name"].'",';
+		$outp .= '"size":"'.$rs["size"].'",';
+		$outp .= '"Price":"'.$rs["Price"].'",';
+		$outp .= '"size_name":"'.$rs["size_name"].'",';
+		$outp .= '"Structure":"'.$rs["Structure"].'"}';
 	}
 
 	$outp = '{"records":['.$outp.']}';
@@ -45,7 +50,8 @@ else if($_SERVER['REQUEST_METHOD'] == "POST") {
 	$shipAddress = $_POST['shipAddress'];
 	$billAddress = $_POST['billAddress'];
 	$cartID = $_POST['cartID'];
-	$query = "INSERT INTO customer_info VALUES ('$id', '$name', '$email', '$shipAddress', '$billAddress', '$cartID')";
+	$poNo = $_POST['poNo'];
+	$query = "INSERT INTO customer_info VALUES ('$id', '$name', '$email', '$shipAddress', '$billAddress', '$poNo', '$cartID')";
 	$conn->query($query);
 	exit();
 }

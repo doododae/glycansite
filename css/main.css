@@ -18,6 +18,12 @@ header {
 	margin: 0px;
 }
 
+.border-bottom {
+	border-bottom-color: #ccc;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
 .logo {
 	width: 150%;
 	max-width: 250px;
