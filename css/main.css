@@ -18,6 +18,12 @@ header {
 	margin: 0px;
 }
 
+.qty {
+	width: 5%;
+	position: absolute;
+	left: 92%;
+}
+
 .border-bottom {
 	border-bottom-color: #ccc;
 	border-bottom-width: 1px;

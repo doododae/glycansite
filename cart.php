@@ -20,7 +20,7 @@ else {
 $input = json_decode(file_get_contents("php://input"));
 
 if($_SERVER['REQUEST_METHOD'] == "GET") {
-	$query = "SELECT compounds.id, Name, size, size_name, Price, Structure FROM compounds JOIN tempcart ON compounds.id = tempcart.pid";
+	$query = "SELECT compounds.id, Name, size, size_name, Price, quantity, Structure FROM compounds JOIN tempcart ON compounds.id = tempcart.pid";
 
 	$result = $conn->query($query);
 
@@ -34,6 +34,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
 		$outp .= '"size":"'.$rs["size"].'",';
 		$outp .= '"Price":"'.$rs["Price"].'",';
 		$outp .= '"size_name":"'.$rs["size_name"].'",';
+		$outp .= '"quantity":"'.$rs["quantity"].'",';
 		$outp .= '"Structure":"'.$rs["Structure"].'"}';
 	}
 

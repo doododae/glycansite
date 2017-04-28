@@ -163,15 +163,11 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 		'Biotin'
 	];
 
-	$scope.addToCart = function(pid, size, size_name) {
-		let promise = new Promise((resolve, reject) => {
-			$.post("/products/compounds.php", {id: '101', pid: pid, size: size, size_name: size_name});
-			setTimeout(function() {
-				resolve("Success!");
-			}, 250);
-		});
+	$scope.addToCart = function(pid, size, size_name, qty) {
 
-		promise.then(function(response) {
+		var promise = $.post("/products/compounds.php", {id: '101', pid: pid, size: size, size_name: size_name, quantity: qty});
+
+		promise.then(function(success) {
 			$http.get('/cart.php')
 			.then(function(response) {
 				$ctrl.items = response.data.records;
@@ -269,8 +265,13 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 		else
 			$scope.selectedIndex = undefined;
 	}
+
+	$scope.cartData = {};
+
 	$scope.confirmPurchase = function() {
-		$.post("/cart.php", {id: "online-test-101", name: $scope.name, email: $scope.email, phone: $scope.phone, shipAddress: $scope.shipAddress, billAddress: $scope.billAddress, poNo: $scope.PO, cartID: "101"})
+		$scope.name = $scope.cartData.firstName + " " + $scope.cartData.lastName;
+		$scope.shipAddress = $scope.cartData.address + ", " + $scope.cartData.city + ", " + $scope.cartData.state + ", " + $scope.cartData.country + " " + $scope.cartData.zip;
+		$.post("/cart.php", {id: Date.now(), name: $scope.name, email: $scope.cartData.email, phone: $scope.cartData.phone, shipAddress: $scope.shipAddress, billAddress: $scope.cartData.billAddress, poNo: $scope.cartData.PO, cartID: "101"})
 		.then( function(results) {
 			$state.go('confirm');
 		});
@@ -280,6 +281,13 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 angular.module('Compounds').controller('ModalInstanceCtrl', function ($uibModalInstance, items, $scope, $state) {
   var $ctrl = this;
   $ctrl.items = items;
+  $ctrl.quantity = [];
+
+  
+  $ctrl.deleteFromCart = function(pid) {
+		$http.delete("/cart.php")
+			;
+  }
 
   $ctrl.displayPrice = function(price, multiplier) {
 		price = Number(price);

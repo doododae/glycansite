@@ -43,9 +43,11 @@
             		<p class="border-bottom">ID: {{item.id}} | {{item.Name}} ({{item.size_name}})</p>
             		<p>{{item.Structure}}</p>
             	</div>
-                <div class="col-sm-2"> 
-                	Qty <input id="cartQuantity" class="form-control input-sm text-center" ng-model="quantity[$index]" ng-init="quantity[$index]=1" placeholder="Qty">
-                	$<span ng-bind="$ctrl.displayPrice(item.Price, item.size)"></span>
+                <div class="col-sm-1"> 
+                	$<span ng-bind="$ctrl.displayPrice(item.Price, item.size)*item.quantity"></span>
+                </div>
+                <div class="col-sm-1">
+                <a ng-click="$ctrl.deleteFromCart(item.id)"><span class="glyphicon glyphicon-remove" ></span></a>
                 </div>
             </div>
         </div>
