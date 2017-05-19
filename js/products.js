@@ -171,8 +171,8 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 			$http.get('/cart.php')
 			.then(function(response) {
 				$ctrl.items = response.data.records;
+				$ctrl.open();
 			});
-			$ctrl.open();
 		});
 	}
 
@@ -269,24 +269,32 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 	$scope.cartData = {};
 
 	$scope.confirmPurchase = function() {
+		alert(generateUUID());
 		$scope.name = $scope.cartData.firstName + " " + $scope.cartData.lastName;
 		$scope.shipAddress = $scope.cartData.address + ", " + $scope.cartData.city + ", " + $scope.cartData.state + ", " + $scope.cartData.country + " " + $scope.cartData.zip;
-		$.post("/cart.php", {id: Date.now(), name: $scope.name, email: $scope.cartData.email, phone: $scope.cartData.phone, shipAddress: $scope.shipAddress, billAddress: $scope.cartData.billAddress, poNo: $scope.cartData.PO, cartID: "101"})
+		$scope.billAddress = $scope.cartData.billAddress + ", " + $scope.cartData.billCity + ", " + $scope.cartData.billState + ", " + $scope.cartData.billCountry + " " + $scope.cartData.billZip;
+		var id = Date.now();
+		$.post("/cart.php", {type: 'customer', id: id, name: $scope.name, email: $scope.cartData.email, phone: $scope.cartData.phone, shipAddress: $scope.shipAddress, cartID: "102",
+							 bid: id, institution: $scope.cartData.Institution, contact: $scope.cartData.contactName, contactEmail: $scope.cartData.contactEmail, 
+							 contactPhone: $scope.cartData.contactPhone, billAddress: $scope.cartData.billAddress, poNo: $scope.cartData.billPO,
+							 oid: generateUUID(), cid: id})
 		.then( function(results) {
 			$state.go('confirm');
 		});
 	}
 });
 
-angular.module('Compounds').controller('ModalInstanceCtrl', function ($uibModalInstance, items, $scope, $state) {
+angular.module('Compounds').controller('ModalInstanceCtrl', function ($uibModalInstance, $http, items, $scope, $state) {
   var $ctrl = this;
   $ctrl.items = items;
-  $ctrl.quantity = [];
-
   
   $ctrl.deleteFromCart = function(pid) {
-		$http.delete("/cart.php")
-			;
+  		var url = "/cart.php/" + pid;
+		$http.delete(url);
+		$http.get('/cart.php')
+		.then(function(response) {
+			$ctrl.items = response.data.records;
+		});
   }
 
   $ctrl.displayPrice = function(price, multiplier) {
@@ -312,3 +320,15 @@ angular.module('Compounds').controller('ModalInstanceCtrl', function ($uibModalI
     $uibModalInstance.dismiss('cancel');
   };
 });
+
+function generateUUID() { // Public Domain/MIT
+    var d = new Date().getTime();
+    if (typeof performance !== 'undefined' && typeof performance.now === 'function'){
+        d += performance.now(); //use high-precision timer if available
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0;
+        d = Math.floor(d / 16);
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+}

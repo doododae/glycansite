@@ -34,7 +34,6 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
 		$outp .= '"Series":"'.$rs["Series"].'",';
 		$outp .= '"Name":"'.$rs["Name"].'",';
 		$outp .= '"Structure":"'.$rs["Structure"].'",';
-		$outp .= '"url":"'.$rs["url"].'",';
 		$outp .= '"Link_A":"'.$rs["Link_A"].'",';
 		$outp .= '"Link_B":"'.$rs["Link_B"].'",';
 		$outp .= '"Link_C":"'.$rs["Link_C"].'",';
