@@ -20,7 +20,8 @@ else {
 $input = json_decode(file_get_contents("php://input"));
 
 if($_SERVER['REQUEST_METHOD'] == "GET") {
-	$query = "SELECT compounds.id, Name, size, size_name, Price, quantity, Structure FROM compounds JOIN tempcart ON compounds.id = tempcart.pid";
+	$id = intval($path_components[1]);
+	$query = "SELECT compounds.id, Name, size, size_name, Price, quantity, Structure FROM compounds JOIN tempcart ON compounds.id = tempcart.pid WHERE tempcart.id = $id";
 
 	$result = $conn->query($query);
 
@@ -46,26 +47,26 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
 
 else if($_SERVER['REQUEST_METHOD'] == "POST") {
 	if($_POST['type'] == "customer") {
-		$id = $_POST['id'];
-		$name = $_POST['name'];
-		$email = $_POST['email'];
-		$shipAddress = $_POST['shipAddress'];
-		$cartID = $_POST['cartID'];
+		$id = $mysqli->real_escape_string($_POST['id']);
+		$name = $mysqli->real_escape_string($_POST['name']);
+		$email = $mysqli->real_escape_string($_POST['email']);
+		$shipAddress = $mysqli->real_escape_string($_POST['shipAddress']);
+		$cartID = $mysqli->real_escape_string($_POST['cartID']);
 		$query = "INSERT INTO customer_info VALUES ('$id', '$name', '$email', '$shipAddress', '$cartID')";
 		$conn->query($query);
 
-		$bid = $_POST['bid'];
-		$institution = $_POST['institution'];
-		$contact = $_POST['contact'];
-		$contactEmail = $_POST['contactEmail'];
-		$contactPhone = $_POST['contactPhone'];
-		$billAddress = $_POST['billAddress'];
-		$poNo = $_POST['poNo'];
+		$bid = $mysqli->real_escape_string($_POST['bid']);
+		$institution = $mysqli->real_escape_string($_POST['institution']);
+		$contact = $mysqli->real_escape_string($_POST['contact']);
+		$contactEmail = $mysqli->real_escape_string($_POST['contactEmail']);
+		$contactPhone = $mysqli->real_escape_string($_POST['contactPhone']);
+		$billAddress = $mysqli->real_escape_string($_POST['billAddress']);
+		$poNo = $mysqli->real_escape_string($_POST['poNo']);
 		$billQuery = "INSERT INTO billing_info VALUES ('$bid', '$institution', '$contact', '$contactEmail', '$contactPhone', '$billAddress', '$poNo')";
 		$conn->query($billQuery);
 
-		$oid = $_POST['oid'];
-		$cid = $_POST['cid'];
+		$oid = $mysqli->real_escape_string($_POST['oid']);
+		$cid = $mysqli->real_escape_string($_POST['cid']);
 		$date = date(gmdate('Y-m-d h:i:s'));
 		$invoiceQuery = "INSERT INTO orders VALUES ('$oid', '$cid', '$date')";
 		$conn->query($invoiceQuery);

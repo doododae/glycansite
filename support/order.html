@@ -26,31 +26,91 @@
     <h2>
 	<div class="col-sm-6">
 		<h2 class="black">Customer Information</h2>
-		<form name="customerForm">
-			<input id="FirstName" ng-model="cartData.firstName" class="form-control input-sm text-center" placeholder="First Name" required>
-			<input id="LastName" ng-model="cartData.lastName" class="form-control input-sm text-center" placeholder="Last Name" required>
-			<input id="Email" ng-model="cartData.email" class="form-control input-sm text-center" placeholder="Email" required>
-			<input id="Phone" ng-model="cartData.phone" class="form-control input-sm text-center" placeholder="Phone Number" required>
-			<input id="Address" ng-model="cartData.address" class="form-control input-sm text-center" placeholder="Address" required>
-			<input id="City" ng-model="cartData.city" class="form-control input-sm text-center" placeholder="City" required>
-			<input id="State" ng-model="cartData.state" class="form-control input-sm text-center" placeholder="State (if Applicable)">
-			<input id="Country" ng-model="cartData.country" class="form-control input-sm text-center" placeholder="Country" required>
-			<input id="Zip" ng-model="cartData.zip" class="form-control input-sm text-center" placeholder="Zip Code" required>
+		<form class="form-horizontal" name="customerForm">
+			<div class="form-group">
+				<h4>First Name</h4>
+				<div class="col-sm-11">
+					<input id="FirstName" ng-model="cartData.firstName" class="form-control input-sm text-center" name="firstname" placeholder="First Name" required>
+				</div>
+				<span class="required" ng-hide="customerForm.firstname.$valid"><sup>*</sup></span>
+			</div>
+			<div class="form-group">
+				<h4>Last Name</h4>
+				<div class="col-sm-11">
+					<input id="LastName" ng-model="cartData.lastName" class="form-control input-sm text-center" name="lastname" placeholder="Last Name" required>
+				</div>
+				<span class="required" ng-hide="customerForm.lastname.$valid"><sup>*</sup></span>
+			</div>
+			<div class="form-group">
+				<h4>Email</h4>
+				<div class="col-sm-11">
+					<input id="Email" ng-model="cartData.email" class="form-control input-sm text-center" name="email" placeholder="Email" required>
+				</div>
+				<span class="required" ng-hide="customerForm.email.$valid"><sup>*</sup></span>
+			</div>
+			<div class="form-group">
+				<h4>Phone Number</h4>
+				<div class="col-sm-11">
+					<input id="Phone" ng-model="cartData.phone" class="form-control input-sm text-center" name="number" placeholder="Phone Number" required>
+				</div>
+				<span class="required" ng-hide="customerForm.phone.$valid"><sup>*</sup></span>
+			</div>
+			<div class="form-group">
+				<h4>Street Address</h4>
+				<div class="col-sm-11">
+					<input id="Address" ng-model="cartData.address" class="form-control input-sm text-center" name="address" placeholder="Address" required>
+				</div>
+				<span class="required" ng-hide="customerForm.address.$valid"><sup>*</sup></span>
+			</div>
+			<div class="form-group">
+				<h4>City</h4>
+				<div class="col-sm-11">
+					<input id="City" ng-model="cartData.city" class="form-control input-sm text-center" name="city" placeholder="City" required>
+				</div>
+				<span class="required" ng-hide="customerForm.city.$valid"><sup>*</sup></span>
+			</div>
+			<div class="form-group">
+				<h4>State (if Applicable)</h4>
+				<div class="col-sm-11">
+					<input id="State" ng-model="cartData.state" class="form-control input-sm text-center" name="state" placeholder="State (if Applicable)">
+				</div>
+			</div>
+			<div class="form-group">
+				<h4>Country</h4>
+				<div class="col-sm-11">
+					<input id="Country" ng-model="cartData.country" class="form-control input-sm text-center" name="country" placeholder="Country" required>
+				</div>
+				<span class="required" ng-hide="customerForm.country.$valid"><sup>*</sup></span>
+			</div>
+			<div class="form-group">
+				<h4>Zip Code</h4>
+				<div class="col-sm-11">
+					<input id="Zip" ng-model="cartData.zip" class="form-control input-sm text-center" name="zipcode" placeholder="Zip Code" required>
+				</div>
+				<span class="required" ng-hide="customerForm.zipcode.$valid"><sup>*</sup></span>
+			</div>
 		</form>
 	</div>
 	<div class="col-sm-6">
 		<h2 class="black">Billing Information</h2>
-		<form name="billingForm">
-			<input id="FirstName" ng-model="cartData.Institution" class="form-control input-sm text-center" placeholder="Institution/Organization" required>
-			<input id="LastName" ng-model="cartData.contactName" class="form-control input-sm text-center" placeholder="Contact Name">
-			<input id="Email" ng-model="cartData.contactEmail" class="form-control input-sm text-center" placeholder="Contact Email">
-			<input id="Phone" ng-model="cartData.contactPhone" class="form-control input-sm text-center" placeholder="Contact Phone Number">
-			<input id="Address" ng-model="cartData.billAddress" class="form-control input-sm text-center" placeholder="Billing Address">
-			<input id="City" ng-model="cartData.billCity" class="form-control input-sm text-center" placeholder="City">
-			<input id="State" ng-model="cartData.billState" class="form-control input-sm text-center" placeholder="State (if Applicable)">
-			<input id="Country" ng-model="cartData.billCountry" class="form-control input-sm text-center" placeholder="Country">
-			<input id="Zip" ng-model="cartData.billZip" class="form-control input-sm text-center" placeholder="Zip Code">
-			<input id="PO" ng-model="cartData.billPO" class="form-control input-sm text-center" placeholder="PO Number">
+		<form class="form-horizontal" name="billingForm">
+			<div class="form-group">
+				<h4>First Name</h4>
+				<div class="col-sm-11">
+					<input id="Organization" ng-model="cartData.Institution" class="form-control input-sm text-center" name="organization" placeholder="Institution/Organization" required>
+				</div>
+				<span class="required" ng-hide="customerForm.firstname.$valid"><sup>*</sup></span>
+			</div>
+			
+			<input id="LastName" ng-model="cartData.contactName" class="form-control input-sm text-center" name="contactname" placeholder="Contact Name">
+			<input id="Email" ng-model="cartData.contactEmail" class="form-control input-sm text-center" name="contactemail" placeholder="Contact Email">
+			<input id="Phone" ng-model="cartData.contactPhone" class="form-control input-sm text-center" name="contactphone" placeholder="Contact Phone Number">
+			<input id="Address" ng-model="cartData.billAddress" class="form-control input-sm text-center" name="billaddress" placeholder="Billing Address">
+			<input id="City" ng-model="cartData.billCity" class="form-control input-sm text-center" name="billcity" placeholder="City">
+			<input id="State" ng-model="cartData.billState" class="form-control input-sm text-center" name="billstate" placeholder="State (if Applicable)">
+			<input id="Country" ng-model="cartData.billCountry" class="form-control input-sm text-center" name="billcountry" placeholder="Country">
+			<input id="Zip" ng-model="cartData.billZip" class="form-control input-sm text-center" name="billzipcode" placeholder="Zip Code">
+			<input id="PO" ng-model="cartData.billPO" class="form-control input-sm text-center" name="ponumber" placeholder="PO Number">
 		</form>
 	</div>
 	<div class="row text-right">

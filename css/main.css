@@ -92,6 +92,11 @@ section div h1 {
 	padding: 15px 10px 15px 0px;
 }
 
+.required {
+	color: red;
+	font-size: 22px;
+}
+
 .hide {
 	display: none;
 }

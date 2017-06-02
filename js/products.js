@@ -1,3 +1,10 @@
+if(sessionStorage.sessionID == undefined) {
+	var sessionID = Math.floor(Math.random() * 1000000000);
+	sessionStorage.setItem("sessionID", sessionID);
+}
+
+console.log(sessionStorage.sessionID);
+
 var app = angular.module('Compounds', ['ui.router', 'ui.bootstrap', 'ngCookies']);
 
 app.config(function($stateProvider, $locationProvider) {
@@ -81,7 +88,7 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 		$scope.compounds = response.data.records;
 	});
 	
-	$http.get('/cart.php')
+	$http.get('/cart.php/' + sessionStorage.sessionID)
 	.then(function(response) {
 		$ctrl.items = response.data.records;
 	});
@@ -92,29 +99,28 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 
 	$ctrl.open = function(size, parentSelector) {
 		var parentElem = parentSelector ? angular.element($document[0].querySelector('.cart-modal' + parentSelector)) : undefined;
-		$http.get('/cart.php')
+		$http.get('/cart.php/' + sessionStorage.sessionID)
 		.then(function(response) {
 			$ctrl.items = response.data.records;
-		});
-
-		var modalInstance = $uibModal.open({
-			animation: true,
-			ariaLabelledBy: 'modal-title',
-			ariaDescribedBy: 'modal-body',
-			templateUrl: 'cartModal.html',
-			controller: 'ModalInstanceCtrl',
-			controllerAs: '$ctrl',
-			size: size,
-			appendTo: parentElem,
-			resolve: {
-				items: function() {
-					return $ctrl.items;
+			var modalInstance = $uibModal.open({
+				animation: true,
+				ariaLabelledBy: 'modal-title',
+				ariaDescribedBy: 'modal-body',
+				templateUrl: 'cartModal.html',
+				controller: 'ModalInstanceCtrl',
+				controllerAs: '$ctrl',
+				size: size,
+				appendTo: parentElem,
+				resolve: {
+					items: function() {
+						return $ctrl.items;
+					}
 				}
-			}
-		});
+			});
 
-		modalInstance.result.then(function (selectedItem) {
-			$ctrl.selected = selectedItem;
+			modalInstance.result.then(function (selectedItem) {
+				$ctrl.selected = selectedItem;
+			});
 		});
 	};
 
@@ -165,10 +171,10 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 
 	$scope.addToCart = function(pid, size, size_name, qty) {
 
-		var promise = $.post("/products/compounds.php", {id: '101', pid: pid, size: size, size_name: size_name, quantity: qty});
+		var promise = $.post("/products/compounds.php", {id: sessionStorage.sessionID, pid: pid, size: size, size_name: size_name, quantity: qty});
 
 		promise.then(function(success) {
-			$http.get('/cart.php')
+			$http.get('/cart.php/' + sessionStorage.sessionID)
 			.then(function(response) {
 				$ctrl.items = response.data.records;
 				$ctrl.open();
@@ -274,7 +280,7 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 		$scope.shipAddress = $scope.cartData.address + ", " + $scope.cartData.city + ", " + $scope.cartData.state + ", " + $scope.cartData.country + " " + $scope.cartData.zip;
 		$scope.billAddress = $scope.cartData.billAddress + ", " + $scope.cartData.billCity + ", " + $scope.cartData.billState + ", " + $scope.cartData.billCountry + " " + $scope.cartData.billZip;
 		var id = Date.now();
-		$.post("/cart.php", {type: 'customer', id: id, name: $scope.name, email: $scope.cartData.email, phone: $scope.cartData.phone, shipAddress: $scope.shipAddress, cartID: "102",
+		$.post("/cart.php", {type: 'customer', id: id, name: $scope.name, email: $scope.cartData.email, phone: $scope.cartData.phone, shipAddress: $scope.shipAddress, cartID: sessionStorage.sessionID,
 							 bid: id, institution: $scope.cartData.Institution, contact: $scope.cartData.contactName, contactEmail: $scope.cartData.contactEmail, 
 							 contactPhone: $scope.cartData.contactPhone, billAddress: $scope.cartData.billAddress, poNo: $scope.cartData.billPO,
 							 oid: generateUUID(), cid: id})

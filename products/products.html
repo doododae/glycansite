@@ -35,8 +35,8 @@
 						No. {{x.id}} | {{x.Name}} 
 						<a class="white-text" ng-href="../support/{{x.Family}}-sheets/Product_{{x.Family}}-{{x.id}}.pdf" target="_self"><span class="glyphicon glyphicon-info-sign"></span></a>
 						<a ng-hide="isPNP(x.Family)" class="white-text" ng-href="../support/{{x.Family}}-sheets/Safety_{{x.Family}}-{{x.id}}.pdf" target="_self"><span class="glyphicon glyphicon-exclamation-sign"></span></a>
-						<a class="distributor float-right" ng-click="addToCart(x.id, pricing.value, pricing.label, quantity[$index])">Order</a>
-						Qty. <input id="cartQuantity" class="form-control qty input-sm text-center" ng-model="quantity[$index]" ng-init="quantity[$index]=1" placeholder="Qty">
+						<a class="distributor float-right" ng-click="addToCart(x.id, pricing.value, pricing.label, quantity[$index])">Add To Cart</a>
+						<input id="cartQuantity" class="form-control qty input-sm text-center" ng-model="quantity[$index]" ng-init="quantity[$index]=1" placeholder="Qty">
 						<br>
 						<span class="white-text" ng-hide="noPrice(x.Price)"> Price: $<span ng-bind="displayPrice(x.Price, pricing.value)"></span>
 						<select class="black-text pricing-box" ng-init="pricing=options[0]" ng-model="pricing" ng-options="option as option.label for option in options"></select>
