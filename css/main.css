@@ -510,6 +510,12 @@ a:hover {
 	border-bottom-color: #ccc;
 }
 
+.border-top {
+	border-top-style: solid;
+	border-top-width: 1px;
+	border-top-color: #ccc;
+}
+
 a {
 	color: #305597;
 }

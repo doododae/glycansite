@@ -21,7 +21,7 @@ $input = json_decode(file_get_contents("php://input"));
 
 if($_SERVER['REQUEST_METHOD'] == "GET") {
 	$id = intval($path_components[1]);
-	$query = "SELECT compounds.id, Name, size, size_name, Price, quantity, Structure FROM compounds JOIN tempcart ON compounds.id = tempcart.pid WHERE tempcart.id = $id";
+	$query = "SELECT compounds.id, Name, pid, size, size_name, Price, quantity, Structure FROM compounds JOIN tempcart ON compounds.id = tempcart.pid WHERE tempcart.id = $id";
 
 	$result = $conn->query($query);
 
@@ -32,6 +32,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
 		}
 		$outp .= '{"id":"'.$rs["id"].'",';
 		$outp .= '"Name":"'.$rs["Name"].'",';
+		$outp .= '"pid":"'.$rs["pid"].'",';
 		$outp .= '"size":"'.$rs["size"].'",';
 		$outp .= '"Price":"'.$rs["Price"].'",';
 		$outp .= '"size_name":"'.$rs["size_name"].'",';
@@ -77,6 +78,20 @@ else if($_SERVER['REQUEST_METHOD'] == "POST") {
 		mail('kevin.loo69@gmail.com, kjun.liu94@gmail.com', 'Email test', $message);
 	}
 	exit(); 
+}
+
+else if ($_SERVER['REQUEST_METHOD'] == "PUT") {
+	$id = intval($path_components[1]);
+	$pid = intval($path_components[2]);
+	$qty = intval($path_components[3]);
+	$query = "UPDATE tempcart SET quantity=$qty WHERE id=$id AND pid=$pid";
+	if($conn->query($query) === TRUE) {
+		echo "Record updated successfully";
+	}
+	else {
+		echo $conn->error;
+	}
+	exit();
 }
 
 else if($_SERVER['REQUEST_METHOD'] == "DELETE") {

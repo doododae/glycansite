@@ -53,8 +53,9 @@ else if($_SERVER['REQUEST_METHOD'] == "POST") {
 	$pid = intval($_POST['pid']);
 	$size = intval($_POST['size']);
 	$qty = intval($_POST['quantity']);
+	$date = date(gmdate('Y-m-d h:i:s'));
 	$size_name = $conn->real_escape_string($_POST['size_name']);
-	$query = "INSERT INTO tempcart VALUES ($id, $pid, $size, '$size_name', $qty)";
+	$query = "INSERT INTO tempcart VALUES ($id, $pid, $size, '$size_name', $qty, '$date')";
 	$conn->query($query);
 	exit();
 }

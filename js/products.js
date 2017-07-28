@@ -97,31 +97,58 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 
 	$scope.quantity = [];
 
+	$scope.availableQuantity = [{
+		value: 1
+	}, {
+		value: 2
+	}, {
+		value: 3
+	}, {
+		value: 4
+	}, {
+		value: 5
+	}, {
+		value: 6
+	}, {
+		value: 7
+	}, {
+		value: 8
+	}, {
+		value: 9
+	}, {
+		value: 10
+	}];
+
 	$ctrl.open = function(size, parentSelector) {
 		var parentElem = parentSelector ? angular.element($document[0].querySelector('.cart-modal' + parentSelector)) : undefined;
-		$http.get('/cart.php/' + sessionStorage.sessionID)
-		.then(function(response) {
-			$ctrl.items = response.data.records;
-			var modalInstance = $uibModal.open({
-				animation: true,
-				ariaLabelledBy: 'modal-title',
-				ariaDescribedBy: 'modal-body',
-				templateUrl: 'cartModal.html',
-				controller: 'ModalInstanceCtrl',
-				controllerAs: '$ctrl',
-				size: size,
-				appendTo: parentElem,
-				resolve: {
-					items: function() {
-						return $ctrl.items;
+		if($ctrl.items == '') {
+			alert("Add something to the cart!");
+		}
+		else {
+			$http.get('/cart.php/' + sessionStorage.sessionID)
+			.then(function(response) {
+				$ctrl.items = response.data.records;
+				var modalInstance = $uibModal.open({
+					animation: true,
+					ariaLabelledBy: 'modal-title',
+					ariaDescribedBy: 'modal-body',
+					templateUrl: 'cartModal.html',
+					controller: 'ModalInstanceCtrl',
+					controllerAs: '$ctrl',
+					size: size,
+					appendTo: parentElem,
+					resolve: {
+						items: function() {
+							return $ctrl.items;
+						}
 					}
-				}
-			});
+				});
 
-			modalInstance.result.then(function (selectedItem) {
-				$ctrl.selected = selectedItem;
+				modalInstance.result.then(function (selectedItem) {
+					$ctrl.selected = selectedItem;
+				});
 			});
-		});
+		}
 	};
 
 	$scope.distributor = {
@@ -244,7 +271,17 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 		else
 			return false;
 	}
-	$scope.displayPrice = function(price, multiplier) {
+	$scope.totalPrice = function() {
+		total = 0;
+		console.log($ctrl.items.length);
+		for(i = 0; i < $ctrl.items.length; i++) {
+			price = $scope.displayPrice($ctrl.items[i].Price, $ctrl.items[i].size, $ctrl.items[i].quantity);
+			total += price;  
+		}
+		console.log(total);
+		return total;
+	}
+	$scope.displayPrice = function(price, multiplier, quantity) {
 		price = Number(price);
 		multiplier = Number(multiplier);
 		if(multiplier === 5) {
@@ -253,9 +290,7 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 		else if(multiplier === 10) {
 			price = price * multiplier * .6;
 		}
-
-		$scope.price = price;
-		return price;
+		return price * quantity;
 	}
 	$scope.isPNP = function(family) {
 		if(family === "pNP")
@@ -280,9 +315,11 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 		$scope.shipAddress = $scope.cartData.address + ", " + $scope.cartData.city + ", " + $scope.cartData.state + ", " + $scope.cartData.country + " " + $scope.cartData.zip;
 		$scope.billAddress = $scope.cartData.billAddress + ", " + $scope.cartData.billCity + ", " + $scope.cartData.billState + ", " + $scope.cartData.billCountry + " " + $scope.cartData.billZip;
 		var id = Date.now();
-		$.post("/cart.php", {type: 'customer', id: id, name: $scope.name, email: $scope.cartData.email, phone: $scope.cartData.phone, shipAddress: $scope.shipAddress, cartID: sessionStorage.sessionID,
-							 bid: id, institution: $scope.cartData.Institution, contact: $scope.cartData.contactName, contactEmail: $scope.cartData.contactEmail, 
-							 contactPhone: $scope.cartData.contactPhone, billAddress: $scope.cartData.billAddress, poNo: $scope.cartData.billPO,
+		$.post("/cart.php", {type: 'customer', id: id, name: $scope.name, email: $scope.cartData.email, phone: $scope.cartData.phone, 
+							 shipAddress: $scope.cartData.address, shipCity: $scope.cartData.city, shipState: $scope.cartData.state, shipCountry: $scope.cartData.country, shipZip: $scope.cartData.zip,
+							 cartID: sessionStorage.sessionID,
+							 bid: id, institution: $scope.cartData.Institution, contact: $scope.cartData.contactName, contactEmail: $scope.cartData.contactEmail, contactPhone: $scope.cartData.contactPhone, 
+							 billAddress: $scope.cartData.billAddress, billCity: $scope.cartData.billCity, billState: $scope.cartData.billState, billCountry: $scope.cartData.billCountry, billZip: $scope.cartData.billZip, poNo: $scope.cartData.billPO,
 							 oid: generateUUID(), cid: id})
 		.then( function(results) {
 			$state.go('confirm');
@@ -293,34 +330,74 @@ app.controller('compoundCtrl', function($location, $scope, $sce, $http, $uibModa
 angular.module('Compounds').controller('ModalInstanceCtrl', function ($uibModalInstance, $http, items, $scope, $state) {
   var $ctrl = this;
   $ctrl.items = items;
-  
+
+  $ctrl.availableQuantity = [{
+		value: 1
+	}, {
+		value: 2
+	}, {
+		value: 3
+	}, {
+		value: 4
+	}, {
+		value: 5
+	}, {
+		value: 6
+	}, {
+		value: 7
+	}, {
+		value: 8
+	}, {
+		value: 9
+	}, {
+		value: 10
+	}];
+
   $ctrl.deleteFromCart = function(pid) {
-  		var url = "/cart.php/" + pid;
-		$http.delete(url);
-		$http.get('/cart.php')
+		var url = "/cart.php/" + pid;
+	$http.delete(url)
+	.then(function(response) {
+		$http.get('/cart.php/'+sessionStorage.sessionID)
 		.then(function(response) {
 			$ctrl.items = response.data.records;
 		});
+	});
   }
 
-  $ctrl.displayPrice = function(price, multiplier) {
-		price = Number(price);
-		multiplier = Number(multiplier);
-		if(multiplier === 5) {
-			price = price * multiplier * .7;
-		}
-		else if(multiplier === 10) {
-			price = price * multiplier * .6;
-		}
-
-		$scope.price = price;
+  $ctrl.displayPrice = function(price, multiplier, quantity) {
+	price = Number(price);
+	multiplier = Number(multiplier);
+	if(multiplier === 5) {
+		price = price * multiplier * .7;
+	}
+	else if(multiplier === 10) {
+		price = price * multiplier * .6;
+	}
+	return price * quantity;
+	}
+	$ctrl.cartPrice = function(basePrice, multiplier, quantity) {
+		quantity = Number(quantity);
+		price = $ctrl.displayPrice(basePrice, multiplier) * quantity;
 		return price;
 	}
 
   $ctrl.ok = function () {
-  	$state.go('order');
-    $uibModalInstance.close();
+  	if($ctrl.items == "" || $ctrl.items == null) {
+  		$uibModalInstance.close();
+  		alert("Add something to the cart!");
+  	}
+  	else {
+  		$state.go('order');
+    	$uibModalInstance.close();
+  	}
   };
+
+  $ctrl.updateQty = function(pid, qty, index) {
+		$http.put("/cart.php/" + sessionStorage.sessionID + "/" + pid + "/" + qty.value)
+			.then( function(results) {
+				items[index].quantity=qty.value;
+			});
+  }
 
   $ctrl.cancel = function () {
     $uibModalInstance.dismiss('cancel');
