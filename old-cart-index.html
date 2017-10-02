@@ -18,7 +18,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.4.0/ui-bootstrap-tpls.min.js"></script>
 		<script src="/js/products.js"></script>
 		<!--Snipcart stuff-->
-		<script src="https://cdn.snipcart.com/scripts/2.0/snipcart.js" data-api-key="OTI3NGUxYTAtMzQ4OS00N2UwLWFlYTctZDRiYjc0YmQzM2M1NjM2MTQ4MzQ2MjM1ODQwMDkz" id="snipcart"></script>
+		<script src="https://cdn.snipcart.com/scripts/2.0/snipcart.js" data-api-key="YOUR_API_KEY" id="snipcart"></script>
 		<link href="https://cdn.snipcart.com/themes/2.0/base/snipcart.min.css" rel="stylesheet" type="text/css" />
 		
 		<base href="/">
@@ -26,6 +26,43 @@
 	</head>
 
 	<body ng-app="Compounds" ng-controller="compoundCtrl as $ctrl">
+	<script type="text/ng-template" id="cartModal.html">
+		 <div class="modal-header">
+		 	<button type="button" class="close" ng-click="$ctrl.cancel()">&times;</button>
+            <h3 class="modal-title" id="modal-title">Cart</h3>
+        </div>
+        <div class="modal-body" id="modal-body">
+		    <div class="row">
+		    	<div class="col-sm-8">
+		    		<strong>Product</strong>
+		    	</div>
+		    	<div class="col-sm-2 text-center">
+		    		<strong>Qty.</strong>
+		    	</div>	
+		    	<div class="col-sm-1 text-right">
+		    		<strong>Price</strong>
+		    	</div>
+		    </div>
+            <div ng-repeat="item in $ctrl.items" class="row">
+            	<div class="col-sm-8">
+		    		<p class="border-bottom">ID: {{item.id}} | {{item.Name}} <strong>({{item.size_name}})</strong></p>
+		    		<p>{{item.Structure}}</p>
+		    	</div>
+		    	<div class="col-sm-2 text-center"> 
+		    		<select class="black-text pricing-box" ng-init="quantity[$index]=$ctrl.availableQuantity[item.quantity-1]" ng-model="quantity[$index]" ng-change="$ctrl.updateQty(item.pid, quantity[$index], $index)" ng-options="quantity.value for quantity in $ctrl.availableQuantity"></select>
+		        </div>
+		        <div class="col-sm-1 text-right"> 
+		        	$<span ng-bind="$ctrl.displayPrice(item.Price, item.size, item.quantity)"></span>
+		        </div>
+                <div class="col-sm-1">
+                	<button type="button" class="close black" ng-click="$ctrl.deleteFromCart(item.id)">&times;</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary align-right" type="button" ng-click="$ctrl.ok()">Checkout</button>
+        </div>
+	</script>
 		<header>
 			<nav>
 				<h1>
@@ -53,7 +90,7 @@
 				        </li>
 					</ul>
 				<ul class="information">
-					<li><a ng-href="#" class="snipcart-checkout">Cart</a></li>
+					<li><a ng-click="$ctrl.open()">Cart</a></li>
 					<li><a ui-sref="about-us" ui-sref-active="active">About Us</a></li>
 					<li><a ui-sref="contact-us" ui-sref-active="active">Contact Us</a></li>
 				</ul>

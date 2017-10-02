@@ -44,6 +44,8 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
 
 	$outp = '{"records":['.$outp.']}';
 	$conn->close();
+	$file = 'compounds.json';
+	file_put_contents($file, $outp);
 	echo($outp);
 	exit();
 }

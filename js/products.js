@@ -5,10 +5,22 @@ if(sessionStorage.sessionID == undefined) {
 
 console.log(sessionStorage.sessionID);
 
+
 var app = angular.module('Compounds', ['ui.router', 'ui.bootstrap', 'ngCookies']);
 
-app.config(function($stateProvider, $locationProvider) {
-  $locationProvider.html5Mode(true);   
+app.config(function($stateProvider, $locationProvider, $urlRouterProvider) {
+  $urlRouterProvider.when('', '/');   
+  $urlRouterProvider.rule(function ($injector, $location) {
+	var path = $location.path();
+	var match = path.match(/(.*)!\/{0,1}$/);
+
+	if(match) {
+		return match[1];
+    }
+  });
+  
+  $locationProvider.html5Mode(true);
+
   var indexState = {
   	name: 'index',
   	url: '/',
