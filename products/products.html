@@ -23,7 +23,7 @@
 				</ul>
 				<li><a data-toggle="collapse" class="collapsed" data-target="#by-tag">By Tag </a></li>
 				<ul id="by-tag" class="collapse nav-in-nav"> 
-					<li ng-repeat="tag in tagName" class="family-item" ng-class="tagFilter===tag?'active-size':''" ng-click="filterUrl(tag, 'tag')"><a ng-class="tagFilter===size?'black-text':''">{{tag}}</a></li>
+					<li ng-repeat="tag in tagName" class="family-item" ng-class="tagFilter===tag?'active-size':''" ng-click="filterUrl(tag, 'tag')"><a ng-class="tagFilter===tag?'black-text':''">{{tag}}</a></li>
 				</ul>
 			</ul>
 		</div>
@@ -31,32 +31,33 @@
 			<h3>{{filtered.length}} available compounds. <a class="align-right" href="/support/misc/Compounds_Sorting.pdf" download target="_self">Download our entire product list here.</a></h3>
 			<div ng-repeat="x in compounds | filter:{Series: seriesFilter, Name: sizeFilter, Family: tagFilter} | filter:nameFilter as filtered" class="row border-bottom">
 				<div class="col-sm-12">
-					<div class="series-{{x.Series}}">
-						No. {{x.id}} | {{x.Name}} 
+					<div class="series-{{x.Series}}" ng-switch on="x.Sizes">
+						<select class="black-text float-right pricing-box" ng-switch-when="1" ng-model="$parent.pricing" ng-init="$parent.pricing=pnpOptions[0]" ng-options="option as option.label for option in pnpOptions"></select>
+						<select class="black-text float-right pricing-box" ng-switch-when="2" ng-model="$parent.pricing" ng-init="$parent.pricing=biotinOptions[0]" ng-options="option as option.label for option in biotinOptions"></select>
+						<select class="black-text float-right pricing-box" ng-switch-when="3" ng-model="$parent.pricing" ng-init="$parent.pricing=fluorOptions[0]" ng-options="option as option.label for option in fluorOptions"></select>
+						<select class="black-text float-right pricing-box" ng-switch-default ng-model="$parent.pricing" ng-init="$parent.pricing=options[0]" ng-options="option as option.label for option in options"></select>
+						No. {{x.id}} | {{x.Name}}
 						<a class="white-text" ng-href="../support/{{x.Family}}-sheets/Product_{{x.Family}}-{{x.id}}.pdf" target="_self"><span class="glyphicon glyphicon-info-sign"></span></a>
-						<a ng-hide="isPNP(x.Family)" class="white-text" ng-href="../support/{{x.Family}}-sheets/Safety_{{x.Family}}-{{x.id}}.pdf" target="_self"><span class="glyphicon glyphicon-exclamation-sign"></span></a>					
-						<select class="black-text pricing-box align-right" ng-init="quantity[$index]=availableQuantity[0]" ng-model="quantity[$index]" ng-options="quantity.value for quantity in availableQuantity"></select>
+						<a ng-if="x.Family=='Azido'" class="white-text" ng-href="../support/{{x.Family}}-sheets/Safety_{{x.Family}}-{{x.id}}.pdf" target="_self"><span class="glyphicon glyphicon-exclamation-sign"></span></a>				
 						<br>
-						<span class="white-text" ng-hide="noPrice(x.Price)"> Price: $<span ng-bind="displayPrice(x.Price, pricing.value, 1)"></span>
-						<select class="black-text pricing-box" ng-init="pricing=options[0]" ng-model="pricing" ng-options="option as option.label for option in options"></select>
-						</span>
-						<a class="distributor align-right" ng-click="addToCart(x.id, pricing.value, pricing.label, quantity[$index].value)">Add To Cart</a>
-						<span class="white-text" ng-show="noPrice(x.Price)">Price: MSRP</span>				
+						<span> Price: $<span ng-bind="displayPrice(x.Price, x.Price2, x.Price3, pricing.value)"></span></span>
+						<a class="distributor align-right snipcart-add-item add-cart" ng-switch-when="1" data-item-id="{{x.id}}" data-item-name="{{x.Name}}" data-item-price="{{x.Price}}" data-item-url="/products.json" data-item-custom1-name="Size" data-item-custom1-options=" 1 mg[+{{x.Price3 - x.Price}}]">ADD TO CART</a>
+						<a class="distributor align-right snipcart-add-item add-cart" ng-switch-when="2" data-item-id="{{x.id}}" data-item-name="{{x.Name}}" data-item-price="{{x.Price}}" data-item-url="/products.json" data-item-custom1-name="Size" data-item-custom1-options="100 ug">ADD TO CART</a>
+						<a class="distributor align-right snipcart-add-item add-cart" ng-switch-when="3" data-item-id="{{x.id}}" data-item-name="{{x.Name}}" data-item-price="{{x.Price}}" data-item-url="/products.json" data-item-custom1-name="Size" data-item-custom1-options="50 ug">ADD TO CART</a>
+						<a class="distributor align-right snipcart-add-item add-cart" ng-switch-default data-item-id="{{x.id}}" data-item-name="{{x.Name}}" data-item-price="{{x.Price}}" data-item-url="/products.json" data-item-custom1-name="Size" data-item-custom1-options="100 ug|500 ug[+{{x.Price2-x.Price}}]|1 mg[+{{x.Price3-x.Price}}]" data-item-custom1-value="{{pricing.label}}">ADD TO CART</a>				
 					</div>
 				</div>
 				<div class="col-sm-12">
-					<div class="panel panel-default" ng-click="changeGlyph($index)" data-toggle="collapse" data-target="#{{x.id}}">
-						<div class="panel-heading">
+					<div class="panel panel-default">
+						<div class="panel-heading" ng-click="x.isCollapsed = !x.isCollapsed">
 							<h4 class="panel-title">
 							<a>
-							{{x.Structure}} <span class="glyphicon align-right" ng-class="$index===selectedIndex?'glyphicon-chevron-up':'glyphicon-chevron-down'"></span>
+							{{x.Structure}} <span class="glyphicon align-right" ng-class="x.isCollapsed?'glyphicon-chevron-down':'glyphicon-chevron-up'"></span>
 							</a>
 							</h4>
 						</div>
-						<div id="{{x.id}}" collapse="status.isCustomHeaderOpen" class="collapse">
-							<div class="panel-body">
+						<div class="panel-body" uib-collapse="x.isCollapsed">
 							<img class="structure-pic" ng-src="/images/{{x.id}}.jpg"/>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -64,6 +65,6 @@
 		</div>
 	</div>
 	<div class="row">
-		<p class="align-right">Don't see a compound you want? Try our <a ng-href="/services/#custom-synthesis">custom synthesis <span class="glyphicon glyphicon-chevron-right small" aria-hidden="true"></span></a></p>
+		<p class="align-right">Don't see a compound you want? Try our <a ui-sref="services">custom synthesis <span class="glyphicon glyphicon-chevron-right small" aria-hidden="true"></span></a></p>
 	</div>
 </div>

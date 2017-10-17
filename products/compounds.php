@@ -34,17 +34,16 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
 		$outp .= '"Series":"'.$rs["Series"].'",';
 		$outp .= '"Name":"'.$rs["Name"].'",';
 		$outp .= '"Structure":"'.$rs["Structure"].'",';
-		$outp .= '"Link_A":"'.$rs["Link_A"].'",';
-		$outp .= '"Link_B":"'.$rs["Link_B"].'",';
-		$outp .= '"Link_C":"'.$rs["Link_C"].'",';
-		$outp .= '"Picture":"'.$rs["Picture"].'",';
+		$outp .= '"Sizes":"'.$rs["Sizes"].'",';
 		$outp .= '"Price":"'.$rs["Price"].'",';
+		$outp .= '"Price2":"'.$rs["Price2"].'",';
+		$outp .= '"Price3":"'.$rs["Price3"].'",';
 		$outp .= '"Keywords":"'.$rs["Keywords"].'"}';
 	}
 
-	$outp = '{"records":['.$outp.']}';
+	$outp = '['.$outp.']';
 	$conn->close();
-	$file = 'compounds.json';
+	$file = '../products.json';
 	file_put_contents($file, $outp);
 	echo($outp);
 	exit();
